@@ -1,0 +1,63 @@
+# ---------- 依赖 ----------
+node_modules/
+.pnpm-store/
+jspm_packages/
+
+# ---------- 构建产物 ----------
+dist/
+dist-ssr/
+build/
+out/
+release/
+*.zip
+*.crx
+*.pem
+*.key
+
+# ---------- 缓存 ----------
+.vite/
+**/node_modules/.vite/
+.vitest/
+coverage/
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+
+# ---------- 日志 ----------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ---------- 本地私密配置 ----------
+.env
+.env.*
+!.env.example
+*.local
+
+# ---------- 编辑器 / IDE ----------
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+# ---------- 系统文件 ----------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ---------- 工具临时文件 ----------
+.tmp/
+temp/
+*.tsv

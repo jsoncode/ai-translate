@@ -1,0 +1,20 @@
+# 统一换行符，避免跨平台 diff 噪声
+* text=auto eol=lf
+
+# 明确按二进制处理，防止被转换损坏
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.zip binary
+
+# 生成物：标注为自动生成（仍保持文本可 diff）
+pnpm-lock.yaml linguist-generated
+src/engine/ai-translate-engine.js linguist-generated
+dist/** linguist-generated

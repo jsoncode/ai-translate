@@ -1,0 +1,41 @@
+{
+  "name": "ai-translate-extension",
+  "version": "0.2.0",
+  "private": true,
+  "license": "MIT",
+  "description": "浏览器插件：用自配置的大模型直接翻译网页（TS + React + antd，引擎由 tools/build-engine.mjs 生成）",
+  "keywords": ["chrome-extension", "manifest-v3", "translation", "llm", "openai", "react", "antd", "typescript"],
+  "type": "module",
+  "scripts": {
+    "dev": "npm run watch",
+    "build": "node scripts/build.mjs",
+    "build:pages": "vite build --mode pages",
+    "build:background": "vite build --mode background",
+    "build:content": "vite build --mode content",
+    "watch": "node scripts/build.mjs --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:smoke": "node tools/smoke-test.mjs",
+    "engine": "node tools/build-engine.mjs",
+    "icons": "node tools/make-icons.mjs",
+    "verify": "npm run typecheck && npm run test && npm run build && npm run test:smoke"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.3.4",
+    "antd": "^6.6.4",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.3.0",
+    "@types/node": "^22.20.3",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^30.1.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}
