@@ -28,23 +28,26 @@ Unlike word-selection translators, it is built for **page-level, structure-aware
 - Preserves DOM structure: `<img>`, icons, `￥`, inline `<span>` and other non-text nodes are left untouched
 - Switching back to Chinese **restores the original text exactly** — no mismatched text, no English left behind
 
-```
-┌────────────────────────────────┐
-│ 译  AI Web Translator   [ ●]   │   ← one switch (off = restore Chinese)
-│     English                    │
-├────────────────────────────────┤
-│ Target lang [ English      ▾]  │
-│ Model       [ DeepSeek     ▾]  │
-│ deepseek-chat · api.deep…/v1   │
-├────────────────────────────────┤
-│ [ ⚡ Translate ] [ ↻ Restore ]  │
-├────────────────────────────────┤
-│ Auto-translate on load    [ ●] │
-│ Debug logs                [ ○] │
-├────────────────────────────────┤
-│ ⚙ Models & settings   ✓ 42 done│
-└────────────────────────────────┘
-```
+## UI
+
+<table>
+  <tr>
+    <td width="50%"><img src="./docs/popup-dark.png" alt="popup · dark · translating"></td>
+    <td width="50%"><img src="./docs/popup-light.png" alt="popup · light · done"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="./docs/options-dark.png" alt="options · dark"></td>
+    <td width="50%"><img src="./docs/options-light.png" alt="options · light"></td>
+  </tr>
+</table>
+
+Design direction: a neutral graphite base with a **single accent colour** (signal cyan). Hierarchy comes from 1px
+hairlines and font weight — no gradients, no glow, no glassmorphism. Status, progress and errors are always shown
+**in place** instead of popping overlays at you. The theme follows the system by default and can be pinned to
+light or dark.
+
+<sub>Rendered from the real build output (`dist/`) with demo values; the theme switch lives at the bottom of the
+settings rail.</sub>
 
 ## Features
 
@@ -60,8 +63,12 @@ Unlike word-selection translators, it is built for **page-level, structure-aware
   permanently blacklisted, and duplicate requests are avoided
 - **Dedup & tolerance** — identical texts in one batch are sent once; a single-item response missing the `[index]`
   prefix is auto-completed; stream chunk boundaries cannot glue entries together
-- **Visual configuration** — popup for on/off, language, model and progress; options page for model CRUD and a
-  built-in connectivity test
+- **Visual configuration** — popup for on/off, translation direction, model and live progress
+  (`17 / 48 segments`); options page for model CRUD and a built-in connectivity test, laid out as a settings rail
+  plus setting rows, with a system / light / dark theme
+- **Interaction details** — the main button follows the state (translate / turn off and restore), a missing model
+  is reported in place with a way out, `Ctrl/Cmd + Enter` translates, `Ctrl/Cmd + S` saves, polling adapts
+  (0.7s while translating, 2.5s when idle), and unsaved changes are flagged
 - **No telemetry** — nothing is collected, no analytics, no first-party reporting
 
 ## Quick start
@@ -143,12 +150,17 @@ public/icons/                   # 16/48/128 icons
 src/background/index.ts         # service worker: model calls + streaming relay (only place the key is used)
 src/content/index.ts            # content script: config + transport wiring, popup messaging
 src/engine/ai-translate-engine.js  # the translation engine (generated — do not edit)
+src/components/ThemeRoot.tsx    # theme + antd look (seed colours mirror base.css)
+src/components/Mark.tsx         # brand mark (inline SVG, no icon font)
 src/lib/config.ts               # config defaults / validation / languages / presets
 src/lib/storage.ts              # thin chrome.storage wrapper (mockable in tests)
+src/lib/theme.ts                # theme resolution and persistence (system / light / dark)
 src/lib/model-client.ts         # OpenAI-compatible client (SSE parsing, connectivity test)
 src/lib/types.ts                # shared types (engine API, port message protocol)
+src/styles/base.css             # design tokens (both themes) and shared primitives
 src/popup/                      # React + antd toolbar popup
 src/options/                    # React + antd settings page
+docs/                           # UI screenshots
 scripts/build.mjs               # builds the three targets / watch mode
 tests/                          # vitest unit tests
 tools/                          # engine generator, icon generator, jsdom smoke test
@@ -194,8 +206,8 @@ re-apply / restore logic intact.
 pnpm verify
 ```
 
-- `tests/` — config normalization/validation and the model client (SSE parsing, streaming assembly, HTTP errors,
-  abort, non-streaming fallback): 24 checks
+- `tests/` — config normalization/validation, theme resolution and the model client (SSE parsing, streaming
+  assembly, HTTP errors, abort, non-streaming fallback): 27 checks
 - `tools/smoke-test.mjs` — runs the built content script in jsdom: stays Chinese when off → translates plain text,
   composite blocks (keeping `<img>`) and fragment-style composite blocks when on → restores every node to Chinese
   when off: 8 checks
@@ -223,7 +235,7 @@ pnpm verify
 - [ ] Local translation cache to avoid paying twice for the same text
 - [ ] UI for glossaries and a "do not translate" allow-list
 - [ ] Firefox / Safari support
-- [ ] Screenshots and a demo GIF
+- [x] Screenshots (demo GIF still missing)
 
 ## Contributing
 

@@ -11,6 +11,9 @@ export interface ModelConfig {
   systemPrompt: string;
 }
 
+/** 外观主题：跟随系统 / 强制浅色 / 强制深色 */
+export type ThemeMode = 'system' | 'light' | 'dark';
+
 export interface AppConfig {
   enabled: boolean;
   targetLang: string;
@@ -19,6 +22,7 @@ export interface AppConfig {
   timeoutMs: number;
   activeModelId: string;
   models: ModelConfig[];
+  theme: ThemeMode;
 }
 
 export interface LangOption {

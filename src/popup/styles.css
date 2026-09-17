@@ -1,54 +1,217 @@
-* {
-  box-sizing: border-box;
-}
+/* 弹窗：380px 宽，一屏内看完「状态 → 主操作 → 方向 → 模型 → 偏好」 */
 
 html,
 body {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  width: 340px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  background: #fff;
+  width: 380px;
+  min-height: 200px;
 }
 
 .popup {
-  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
 }
 
-.head {
-  margin-bottom: 10px;
+.popup-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
 }
 
-.logo {
-  width: 32px;
-  height: 32px;
-  flex: 0 0 32px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, #2563eb, #22c55e);
-  color: #fff;
-  font-size: 16px;
+/* ------------------------------------------------------------- 顶栏 ---- */
+
+.topbar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-soft);
 }
 
-.title {
-  font-size: 14px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand-name {
+  font-size: 13px;
   font-weight: 600;
-  line-height: 1.2;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
-.card {
+.brand-host {
+  max-width: 210px;
+  color: var(--text-3);
+  line-height: 1.3;
+}
+
+.icon-btn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease),
+    background var(--dur-1) var(--ease);
+}
+
+.icon-btn:hover {
+  color: var(--text);
+  border-color: var(--line-2);
+  background: var(--surface-2);
+}
+
+/* ------------------------------------------------------------- 分区 ---- */
+
+.block {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.block > .micro {
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* ------------------------------------------------------------- 主控 ---- */
+
+.hero-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 10px;
 }
 
-.actions {
-  margin-bottom: 10px;
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.foot {
-  margin-top: 2px;
+.hero-actions .btn-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hero-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.hero-progress-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--text-2);
+}
+
+.hero-progress-meta b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.callout-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.callout-text {
+  line-height: 1.5;
+}
+
+.callout-action {
+  flex: 0 0 auto;
+  padding-inline: 4px;
+  margin-right: -4px;
+}
+
+/* --------------------------------------------------------- 翻译方向 ---- */
+
+.lang-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 6px 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition: border-color var(--dur-1) var(--ease);
+}
+
+.lang-field:hover {
+  border-color: var(--line-2);
+}
+
+.lang-field:focus-within {
+  border-color: var(--accent-line);
+}
+
+.lang-src {
+  flex: 0 0 auto;
+  color: var(--text-3);
+}
+
+.lang-arrow {
+  flex: 0 0 auto;
+  font-size: 10px;
+  color: var(--text-3);
+}
+
+.lang-select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.lang-select .ant-select-selection-item {
+  font-weight: 500;
+  padding-inline-end: 22px;
+}
+
+/* ------------------------------------------------------------- 底栏 ---- */
+
+.footbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 14px 5px;
+}
+
+.foot-btn {
+  margin-left: -8px;
+  color: var(--text-2);
+}
+
+.foot-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+}
+
+.foot-hint-text {
+  margin-left: 3px;
 }

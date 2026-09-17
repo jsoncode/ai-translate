@@ -1,6 +1,6 @@
 {
   "name": "ai-translate-extension",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "license": "MIT",
   "description": "浏览器插件：用自配置的大模型直接翻译网页（TS + React + antd，引擎由 tools/build-engine.mjs 生成）",

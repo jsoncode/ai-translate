@@ -1,4 +1,4 @@
-import type { AppConfig, LangOption, ModelConfig, ModelPreset } from './types';
+import type { AppConfig, LangOption, ModelConfig, ModelPreset, ThemeMode } from './types';
 import { readConfig, writeConfig } from './storage';
 
 /** 目标语言可选项 */
@@ -65,6 +65,12 @@ export function makeModel(patch: Partial<ModelConfig> = {}): ModelConfig {
   };
 }
 
+export const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
+  { value: 'system', label: '跟随系统' },
+  { value: 'light', label: '浅色' },
+  { value: 'dark', label: '深色' },
+];
+
 export const DEFAULT_CONFIG: AppConfig = {
   enabled: false,
   targetLang: 'en',
@@ -72,6 +78,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   debug: false,
   timeoutMs: 60000,
   activeModelId: 'preset_deepseek',
+  theme: 'system',
   models: [
     makeModel({
       id: 'preset_deepseek',
@@ -92,6 +99,7 @@ export function normalizeConfig(input?: Partial<AppConfig> | null): AppConfig {
   };
 
   if (!LANG_NAME[out.targetLang]) out.targetLang = DEFAULT_CONFIG.targetLang;
+  if (!THEME_OPTIONS.some((t) => t.value === out.theme)) out.theme = DEFAULT_CONFIG.theme;
   out.timeoutMs = Math.min(Math.max(Math.trunc(Number(out.timeoutMs)) || 60000, 5000), 600000);
   out.models = out.models.map((m) => ({
     ...m,

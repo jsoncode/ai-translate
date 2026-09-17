@@ -3,7 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI 网页翻译 · 模型与设置</title>
+    <title>AI 网页翻译 · 设置</title>
+    <!-- 首帧底色：脚本还没跑起来时先按系统偏好铺底，避免闪白 -->
+    <style>
+      html {
+        background: #0a0a0b;
+      }
+      @media (prefers-color-scheme: light) {
+        html {
+          background: #fafaf9;
+        }
+      }
+      html[data-theme='light'] {
+        background: #fafaf9;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

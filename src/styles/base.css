@@ -1,0 +1,552 @@
+/* =============================================================================
+   设计基准 · design tokens
+   -----------------------------------------------------------------------------
+   语言：石墨中性底 + 唯一强调色（信号青）。层次靠 1px 发丝线与字重，
+   不靠大圆角、渐变、发光、毛玻璃。数字一律 tabular-nums，避免计数时抖动。
+
+   深浅两套变量同名；antd 的种子色在 components/ThemeRoot.tsx 里同步维护。
+   ============================================================================= */
+
+:root {
+  color-scheme: dark;
+
+  /* 画布 / 层次 */
+  --bg: #0a0a0b;
+  --bg-soft: #0e0e10;
+  --surface: #141417;
+  --surface-2: #1a1a1e;
+  --surface-3: #202026;
+
+  /* 发丝线 */
+  --line: rgba(255, 255, 255, 0.07);
+  --line-2: rgba(255, 255, 255, 0.14);
+
+  /* 文字三级 */
+  --text: #ececee;
+  --text-2: #9c9ca5;
+  --text-3: #6b6b74;
+
+  /* 强调色：只用于「可交互 / 当前状态」 */
+  --accent: #2fd8be;
+  --accent-hover: #4ce3cb;
+  --accent-active: #22b9a3;
+  --accent-text: #46e0c8;
+  --accent-ink: #04211d;
+  --accent-soft: rgba(47, 216, 190, 0.1);
+  --accent-line: rgba(47, 216, 190, 0.34);
+
+  /* 语义色 */
+  --warn: #e2a33f;
+  --warn-soft: rgba(226, 163, 63, 0.1);
+  --warn-line: rgba(226, 163, 63, 0.3);
+  --danger: #f0605f;
+  --danger-soft: rgba(240, 96, 95, 0.1);
+  --danger-line: rgba(240, 96, 95, 0.3);
+
+  /* 纹理 / 阴影 */
+  --tex: rgba(255, 255, 255, 0.035);
+  --mark-fill: rgba(255, 255, 255, 0.04);
+  --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.55);
+
+  /* 圆角 / 间距 / 动效 */
+  --r-xs: 5px;
+  --r-sm: 7px;
+  --r-md: 9px;
+  --r-lg: 12px;
+  --dur-1: 110ms;
+  --dur-2: 170ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* 字体 */
+  --font-sans: ui-sans-serif, -apple-system, 'Segoe UI Variable Text', 'Segoe UI', 'PingFang SC',
+    'Microsoft YaHei UI', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #fafaf9;
+  --bg-soft: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f4f4f2;
+  --surface-3: #ebebe8;
+
+  --line: rgba(20, 20, 19, 0.09);
+  --line-2: rgba(20, 20, 19, 0.17);
+
+  --text: #17171a;
+  --text-2: #5f5f67;
+  --text-3: #8a8a92;
+
+  --accent: #0c8a78;
+  --accent-hover: #0e9c88;
+  --accent-active: #0a7666;
+  --accent-text: #0a7a69;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(12, 138, 120, 0.08);
+  --accent-line: rgba(12, 138, 120, 0.3);
+
+  --warn: #9a6a12;
+  --warn-soft: rgba(154, 106, 18, 0.08);
+  --warn-line: rgba(154, 106, 18, 0.26);
+  --danger: #c93b39;
+  --danger-soft: rgba(201, 59, 57, 0.07);
+  --danger-line: rgba(201, 59, 57, 0.26);
+
+  --tex: rgba(20, 20, 19, 0.04);
+  --mark-fill: #ffffff;
+  --shadow-pop: 0 12px 32px rgba(20, 20, 19, 0.14);
+}
+
+/* ---------------------------------------------------------------- reset ---- */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line-2);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-3);
+  background-clip: content-box;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+/* ------------------------------------------------------------ 排版原语 ---- */
+
+/* 小号全大写标签：仪器面板的刻度感来源 */
+.micro {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  color: var(--text-2);
+}
+
+.dim {
+  color: var(--text-3);
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 淡网格：仪器面板纹理，只做氛围，不抢内容 */
+.tex-grid {
+  position: relative;
+  isolation: isolate;
+}
+
+.tex-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: linear-gradient(to right, var(--tex) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--tex) 1px, transparent 1px);
+  background-size: 20px 20px;
+  -webkit-mask-image: radial-gradient(130% 100% at 0% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(130% 100% at 0% 0%, #000 0%, transparent 72%);
+}
+
+/* ------------------------------------------------------------ 品牌标记 ---- */
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.mark-frame {
+  fill: var(--mark-fill);
+  stroke: var(--line-2);
+  stroke-width: 1;
+}
+
+.mark-rule {
+  fill: none;
+  stroke: var(--text-3);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.mark-caret {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* -------------------------------------------------------- 状态点 / 徽标 ---- */
+
+.dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: var(--text-3);
+  transition: background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+
+.dot.is-on {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.dot.is-busy {
+  background: var(--accent);
+  animation: ait-pulse 1.4s var(--ease) infinite;
+}
+
+.dot.is-warn {
+  background: var(--warn);
+}
+
+.dot.is-error {
+  background: var(--danger);
+}
+
+@keyframes ait-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--accent-soft);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 4px transparent;
+    opacity: 0.55;
+  }
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 9px 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 11.5px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.pill.is-accent {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.pill.is-warn {
+  border-color: var(--warn-line);
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 19px;
+  padding: 0 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  background: var(--surface-2);
+  font-size: 11px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.chip.is-accent {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.chip.is-warn {
+  border-color: var(--warn-line);
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+/* -------------------------------------------------------- 提示 / 空状态 ---- */
+
+/* 左侧色条的就地提示，不弹气泡 */
+.callout {
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--warn);
+  border-radius: var(--r-sm);
+  background: var(--warn-soft);
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.callout.is-error {
+  border-left-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.callout.is-accent {
+  border-left-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.callout .callout-title {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------- 设置行 ---- */
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 46px;
+  padding: 11px 0;
+}
+
+.row + .row {
+  border-top: 1px solid var(--line);
+}
+
+.row-text {
+  min-width: 0;
+}
+
+.row-title {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.row-desc {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+
+.row-control {
+  flex: 0 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --------------------------------------------------------------- 进度条 ---- */
+
+.track {
+  position: relative;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.track-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width var(--dur-2) var(--ease);
+}
+
+.track-fill.is-indeterminate {
+  width: 32%;
+  animation: ait-slide 1.15s var(--ease) infinite;
+}
+
+@keyframes ait-slide {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+/* ------------------------------------------------------------- 骨架屏 ---- */
+
+.skeleton {
+  border-radius: var(--r-sm);
+  background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%);
+  background-size: 200% 100%;
+  animation: ait-shimmer 1.4s linear infinite;
+}
+
+@keyframes ait-shimmer {
+  0% {
+    background-position: 140% 0;
+  }
+  100% {
+    background-position: -40% 0;
+  }
+}
+
+/* -------------------------------------------------------------- 快捷键 ---- */
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 18px;
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-bottom-color: var(--line-2);
+  border-radius: var(--r-xs);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+}
+
+/* --------------------------------------------------- antd 外观收敛/覆写 ---- */
+/* 颜色与圆角都交给 ThemeRoot 的种子色，这里只改 token 覆盖不到的"形状"。 */
+
+.ant-btn {
+  font-weight: 500;
+}
+
+.ant-btn-primary {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.ant-btn-primary:not(:disabled):hover {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.ant-switch {
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+}
+
+.ant-switch:hover:not(.ant-switch-disabled) {
+  background: var(--line-2);
+}
+
+.ant-switch.ant-switch-checked,
+.ant-switch.ant-switch-checked:hover:not(.ant-switch-disabled) {
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.ant-segmented {
+  padding: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.ant-segmented .ant-segmented-item {
+  color: var(--text-2);
+}
+
+.ant-segmented .ant-segmented-item-selected {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: none;
+  font-weight: 500;
+}
+
+.ant-segmented .ant-segmented-thumb {
+  background: var(--surface);
+  box-shadow: none;
+}
+
+.ant-select-dropdown,
+.ant-popover-inner,
+.ant-dropdown-menu {
+  border: 1px solid var(--line);
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  color: var(--accent-text);
+}
+
+.ant-input::placeholder,
+.ant-input-affix-wrapper input::placeholder {
+  color: var(--text-3);
+}
+
+/* --------------------------------------------------------- 无障碍偏好 ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
