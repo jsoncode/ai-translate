@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI 网页翻译（模型直连）",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "用你自己配置的大模型直接翻译网页：整页扫描、按需翻译、中英切换回滚，不经过业务后端。",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "activeTab", "scripting", "tabs"],

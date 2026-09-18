@@ -38,50 +38,7 @@ export interface ModelPreset {
 }
 
 /** 引擎在页面上暴露的状态 */
-export interface EngineStatus {
-  enabled: boolean;
-  targetLang: string;
-  loading: boolean;
-  total: number;
-  translated: number;
-  route: string;
-}
-
-/** 引擎注入给 transport 的配置片段 */
-export interface EngineConfig {
-  enabled: boolean;
-  targetLang: string;
-  debug: boolean;
-}
-
-export interface TranslateHandlers {
-  signal?: AbortSignal;
-  targetLang?: string;
-  onChunk: (delta: string) => void;
-  onDone: () => void;
-  onError: (message: string) => void;
-}
-
-export interface TranslateTransport {
-  translate: (text: string, handlers: TranslateHandlers) => void;
-}
-
-/** 页面上的引擎 API（见 src/engine/ai-translate-engine.js 末尾） */
-export interface EngineApi {
-  applyConfig: (config: Partial<EngineConfig>) => void;
-  setTransport: (transport: TranslateTransport) => void;
-  getConfig: () => EngineConfig;
-  run: () => void;
-  stop: () => void;
-  status: () => EngineStatus;
-  hasChinese: (text: string) => boolean;
-  getLanguage: () => string;
-  scanPageContent: () => void;
-  scanViewportContent: () => void;
-  flashAllText: () => void;
-  reverseChinese: () => void;
-  state: { debug: boolean; isLoading: boolean };
-}
+export type { EngineApi, EngineConfig, EngineStatus, TranslateHandlers, TranslateTransport } from '../engine/types';
 
 /** background <-> content 的长连接消息 */
 export type PortRequest =
@@ -113,7 +70,9 @@ export type RuntimeMessage =
 
 declare global {
   interface Window {
-    __aiTranslateEngine?: EngineApi;
+    __aiTranslateEngine?: import('../engine/types').EngineApi;
     __aiTranslateContentReady?: boolean;
+    /** 引擎在页面上保留的调试入口：aiTranslateHandler.scanPageContent() 等 */
+    aiTranslateHandler?: Record<string, unknown>;
   }
 }

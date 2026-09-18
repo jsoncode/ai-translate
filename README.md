@@ -142,7 +142,7 @@ public/
 src/
   background/index.ts           # service worker：模型请求 + 流式回传（API Key 只在这里用）
   content/index.ts              # 内容脚本：读配置、接传输层、响应 popup
-  engine/ai-translate-engine.js # 翻译引擎（生成物，勿手改）
+  engine/                       # 翻译引擎：26 个职责单一的 TS 模块（state/types/scan/stream/…）
   components/ThemeRoot.tsx      # 主题 + antd 外观（种子色，与 base.css 对应）
   components/Mark.tsx           # 品牌标记（内联 SVG，无图标字体）
   lib/config.ts                 # 配置模型：默认值/校验/语言/模型预设
@@ -183,13 +183,28 @@ MV3 三类入口的要求不同，`vite.config.ts` 用 `--mode` 区分：
 
 ### 关于翻译引擎
 
-`src/engine/ai-translate-engine.js` 是**生成物**：由 `tools/build-engine.mjs` 对一份自研页面翻译引擎
-（原生 JS，含大量真实站点打磨出来的 DOM 处理）做**定点改写**——剥离站点耦合、把请求换成插件传输层，
-DOM 扫描 / 复合块 / 缓存 / 回显 / 回滚逻辑原样保留。
+`src/engine/` 下的引擎来自一份自研页面翻译引擎（原生 JS，含大量真实站点打磨出来的 DOM 处理），
+现已按职责拆成 **26 个 TypeScript 模块**，全部在 `strict` 下通过类型检查；拆分过程不改写函数体
+（逐模块与拆分前逐字节比对一致），DOM 扫描 / 复合块 / 缓存 / 回显 / 回滚逻辑原样保留。
 
-- 生成物已提交进仓库，**日常开发无需重新生成**
-- 需要同步上游修复时：`node tools/build-engine.mjs <上游文件路径>`（或设 `UPSTREAM_ENGINE`）
-- 脚本对每处改写都有锚点断言：上游结构变化会明确报错，而不是静默生成坏文件
+模块分层（依赖自下而上）：
+
+| 模块 | 职责 |
+| --- | --- |
+| `state.ts` | 唯一可变状态宿主（`runtime`）+ 环境常量与标签集合；不导入任何其他引擎模块 |
+| `types.ts` | 引擎类型契约：配置、状态、条目、选择器槽位、复合块片段… |
+| `logger.ts` / `lang.ts` / `markup.ts` / `media.ts` | 日志、语言与标签判定、占位符与媒体 HTML 处理 |
+| `composite*.ts` | 复合块（行内元素 / 媒体混排）的请求文本、结构解析、写回与回滚 |
+| `cache.ts` / `original.ts` / `selector.ts` / `write.ts` | 路由分桶缓存、原文记忆（WeakMap）、选择器回查、节点写入 |
+| `viewport.ts` / `guard.ts` / `scan.ts` | 可视区判定、写入边界判定、节点扫描与条目收集 |
+| `batch.ts` / `parser.ts` / `stream.ts` / `transport.ts` | 批次调度、流式 `[index]` 协议解析、增量落盘、传输层调用 |
+| `lifecycle.ts` / `mutation.ts` / `hooks.ts` / `listeners.ts` | 回滚、路由切换、MutationObserver 批处理、滚动与标题钩子 |
+| `api.ts` / `index.ts` | 对外 API（run / stop / status / config）与 `window` 全局导出 |
+
+- 可变状态集中在一个 `runtime` 对象里：ESM 不允许给导入的绑定赋值，集中后「谁在什么时候改了状态」在调用点一眼可见
+- 拆分前的 `ai-translate-engine.js` 是由 `tools/build-engine.mjs` 从上游插件定点改写生成的单文件；
+  现在**引擎源码即仓库源码**，生成器已退役（这段历史保留在此，便于与上游逐模块对比移植）
+- 上游若修了某处 DOM 处理逻辑，按上表找到对应模块手工移植即可
 
 ### 测试
 
@@ -232,7 +247,8 @@ pnpm verify
 
 1. Fork → 新建分支（`feat/xxx`、`fix/xxx`）
 2. 保持 `pnpm verify` 全绿（类型检查 + 单测 + 构建 + 端到端）
-3. 改动翻译引擎时请**改 `tools/build-engine.mjs` 或上游文件**，不要直接编辑 `src/engine/*.js`
+3. 改动翻译引擎时请按 `src/engine/` 的模块职责就近修改（`state.ts` 是唯一可变状态宿主，
+   跨模块读写都走 `runtime.*`；类型契约在 `types.ts`）
 4. PR 描述里说明动机、影响面，以及你验证过的场景（页面结构、切换时序等）
 
 ## 开源协议
@@ -241,6 +257,7 @@ pnpm verify
 
 MIT 是最宽松的协议之一：可自由使用、修改、分发、商用与再许可，只需保留版权与许可声明。
 
-> **维护者发布前请注意**：`src/engine/ai-translate-engine.js` 由外部自研引擎生成。
-> 以 MIT 开源本仓库前，请确认该上游引擎的版权归属与授权允许（例如属于公司资产时需先取得许可，
-> 或在 README / LICENSE 中标注其独立授权）。`LICENSE` 里的版权人也可替换成你的名字或组织。
+> **维护者发布前请注意**：`src/engine/` 下的引擎源自一份外部自研引擎（原由 `tools/build-engine.mjs`
+> 生成，现已在仓库内拆分为 TS 模块维护）。以 MIT 开源本仓库前，请确认该上游引擎的版权归属与授权允许
+> （例如属于公司资产时需先取得许可，或在 README / LICENSE 中标注其独立授权）。
+> `LICENSE` 里的版权人也可替换成你的名字或组织。

@@ -2,7 +2,7 @@
  * Content script：把插件配置 + 模型传输层接到引擎上，并响应 popup 的开关/状态查询。
  * 引擎（engine/ai-translate-engine.js）在同一 bundle 里先执行，负责 DOM 扫描/回显/回滚。
  */
-import '../engine/ai-translate-engine.js';
+import '../engine/index';
 import { loadConfig } from '../lib/config';
 import { onConfigChanged } from '../lib/storage';
 import type { AppConfig, EngineApi, PortRequest, PortResponse, TabMessage, TranslateHandlers } from '../lib/types';
